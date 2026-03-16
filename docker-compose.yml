@@ -1,0 +1,27 @@
+services:
+  myapp:
+   image: myimgg
+   networks: 
+      - mynet
+  
+   depends_on:
+      - mydb
+   ports:
+      - "5000:5000"
+   environment:
+      - MONGO_HOST=mydb
+      - MONGO_PORT=27017
+
+  mydb:
+   image: mongo:4.4
+   networks: 
+      - mynet
+   volumes: 
+      - myvol:/data/db
+
+
+volumes:
+ myvol:
+
+networks:
+ mynet:
