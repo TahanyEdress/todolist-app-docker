@@ -117,21 +117,6 @@ http://localhost:5000
 ```
 
 You should see the **ToDo List application interface**.
-
----
-
-## Project Demo
-
-### Flask ToDo List in Action
-Live screenshot of the ToDo List interface:
-
-![ToDo App Interface](./images/todo_app_screenshot.jpg)
-
-### Running Containers
-Docker containers running for the application:
-
-![Docker Containers](./images/docker_ps_screenshot.png)
-
 ---
 
 ## Environment Variables
