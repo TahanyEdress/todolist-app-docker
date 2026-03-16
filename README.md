@@ -1,125 +1,166 @@
-# 📝 Todo List App — Flask + MongoDB + Docker
 
-A simple Todo List web application built with **Flask** and **MongoDB**, containerized using **Docker** and orchestrated with **Docker Compose**.
+# Flask ToDo List with MongoDB (Dockerized)
+
+## Overview
+This project is a simple **ToDo List web application** built using **Flask** and **MongoDB**.  
+The application is containerized using **Docker** and orchestrated with **Docker Compose** to demonstrate a simple multi-container architecture.
+
+The application container communicates with the MongoDB container through a custom Docker network.
+
+---
+
+## Technologies Used
+- Python 3.9
+- Flask
+- MongoDB 4.4
+- Docker
+- Docker Compose
+
+---
+
+## Project Architecture
+
+The project consists of two services:
+
+1. **myapp**
+   - Flask web application
+   - Runs on port `5000`
+
+2. **mydb**
+   - MongoDB database
+   - Stores ToDo tasks
+
+Docker Compose connects both services using a shared network.
+
+```
+User Browser
+      |
+      v
+Flask App (myapp)
+      |
+      v
+MongoDB (mydb)
+```
 
 ---
 
 ## Project Structure
 
 ```
-ToDo-List-using-Flask-and-MongoDB/
-├── app.py                  # Main Flask application
-├── requirements.txt        # Python dependencies
-├── Dockerfile              # Docker image build instructions
-├── docker-compose.yml      # Multi-container orchestration
-└── README.md
+ToDo-List-using-Flask-and-MongoDB
+│
+├── app.py
+├── requirements.txt
+├── Dockerfile
+├── docker-compose.yml
+├── README.md
+└── images/
+        ├── todo_app_screenshot.jpg
+        └── docker_ps_screenshot.png
 ```
 
 ---
 
-## Prerequisites
+## Dockerfile
 
-Make sure you have the following installed:
+The Dockerfile builds the Flask application image.
 
-- [Docker](https://docs.docker.com/get-docker/) (v20+)
-
-
-##  Getting Started
-
-### 1. Clone the Repository
-
-```bash
-git clone 
-cd ToDo-List-using-Flask-and-MongoDB
 ```
-
-### 2. Build the Docker Image
-
-```bash
-docker build -t myimgg .
-```
-
-### 3. Run with Docker Compose
-
-```bash
-docker compose up -d
-```
-
-The app will be available at: **http://localhost:5000**
-
-### 4. Stop the Containers
-
-```bash
-docker compose down
-```
-
-## 🐳 Docker Configuration
-
-### Dockerfile
-
-```dockerfile
 FROM python:3.9
-
-WORKDIR /app
 
 COPY . /app
 
-RUN pip install -r requirements.txt
+WORKDIR /app
 
-EXPOSE 5000
+RUN pip install -r requirements.txt
 
 ENTRYPOINT ["python", "app.py"]
 ```
 
-### docker-compose.yml
+---
 
-```yaml
-services:
-  myapp:
-    image: myimgg
-    networks:
-      - mynet
-    volumes:
-      - appvol:/app
-    depends_on:
-      - mydb
-    ports:
-      - "5000:5000"
-    environment:
-      - MONGO_HOST=mydb
-      - MONGO_PORT=27017
+## Docker Compose Configuration
 
-  mydb:
-    image: mongo:4.4
-    networks:
-      - mynet
-    volumes:
-      - dbvol:/data/db
-    ports:
-      - "27017:27017"
+The `docker-compose.yml` defines two services:
 
-volumes:
-  appvol:
-  dbvol:
+- Flask application container
+- MongoDB database container
 
-networks:
-  mynet:
-```
-
-> **Note:** `appvol` and `dbvol` are separate named volumes to prevent data conflicts between the app and the database.
+It also creates a shared network and a persistent volume for MongoDB data.
 
 ---
 
+## How to Run the Project
 
-##  Development
+Make sure **Docker** and **Docker Compose** are installed.
 
-To view logs:
+### 1. Build and start containers
 
-```bash
-# All services
-docker compose logs -f
+```
+docker-compose up --build
+```
 
-# Specific service
-docker compose logs -f myapp
-docker compose logs -f mydb
+### 2. Run in detached mode (optional)
+
+```
+docker-compose up -d
+```
+
+---
+
+## Access the Application
+
+Open your browser and go to:
+
+```
+http://localhost:5000
+```
+
+You should see the **ToDo List application interface**.
+
+---
+
+## Project Demo
+
+### Flask ToDo List in Action
+Live screenshot of the ToDo List interface:
+
+![ToDo App Interface](./images/todo_app_screenshot.jpg)
+
+### Running Containers
+Docker containers running for the application:
+
+![Docker Containers](./images/docker_ps_screenshot.png)
+
+---
+
+## Environment Variables
+
+The Flask application connects to MongoDB using:
+
+```
+MONGO_HOST=mydb
+MONGO_PORT=27017
+```
+
+Docker Compose automatically resolves the service name `mydb` as the database hostname.
+
+---
+
+## Persistent Storage
+
+MongoDB data is stored using a Docker volume:
+
+```
+myvol:/data/db
+```
+
+This ensures the database data persists even if the container is restarted.
+
+---
+
+## Stop the Containers
+
+```
+docker-compose down
 ```
